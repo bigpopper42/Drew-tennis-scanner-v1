@@ -70,32 +70,49 @@ with tab2:
         with c3: pnl=st.number_input('Profit / loss ($)',value=0.0,step=.01)
         if st.button('Update result'): update_result(int(row_id),result,pnl); st.success('Updated. Refresh the page.')
 with tab3:
-    st.subheader('Live tennis feed (beta)'); st.warning('This fetches raw live events. Automatic field mapping is the next integration step.')
-    try: default_key=st.secrets.get('API_TENNIS_KEY','')
-    except Exception: default_key=''
-    api_key=st.text_input('API Tennis key',value=default_key,type='password')
-    if st.button('Fetch live tennis events'):
+    st.subheader("Live tennis feed (beta)")
+    st.warning("This fetches raw live events. Automatic field mapping is the next integration step.")
+
+    try:
+        default_key = st.secrets.get("API_TENNIS_KEY", "")
+    except Exception:
+        default_key = ""
+
+    api_key = st.text_input(
+        "API Tennis key",
+        value=default_key,
+        type="password"
+    )
+
+    if st.button("Fetch live tennis events"):
         try:
-            events=get_live_events(api_key); st.success(f'Fetched {len(events)} live event(s).')
+            events = get_live_events(api_key)
+            st.success(f"Fetched {len(events)} live event(s).")
+
             if events:
                 st.success(f"Found {len(events)} live match(es).")
 
-    for i, match in enumerate(events):
-        player1 = match.get("event_first_player", "Unknown")
-        player2 = match.get("event_second_player", "Unknown")
-        score = match.get("event_final_result", "Live")
-        tournament = match.get("tournament_name", "")
+                for i, match in enumerate(events):
+                    player1 = match.get("event_first_player", "Unknown")
+                    player2 = match.get("event_second_player", "Unknown")
+                    score = match.get("event_final_result", "Live")
+                    tournament = match.get("tournament_name", "")
 
-        with st.container():
-            st.markdown(f"### {player1} vs {player2}")
-            st.write(f"**Tournament:** {tournament}")
-            st.write(f"**Score:** {score}")
+                    with st.container():
+                        st.markdown(f"### {player1} vs {player2}")
+                        st.write(f"**Tournament:** {tournament}")
+                        st.write(f"**Score:** {score}")
 
-            st.button("Analyze", key=f"analyze_{i}")
+                        if st.button("Analyze", key=f"analyze_{i}"):
+                            st.info("Analysis coming in the next update.")
 
-            st.divider()
-            else: st.info('No live events returned.')
-        except Exception as e: st.error(f'Could not fetch live events: {e}')
+                        st.divider()
+
+            else:
+                st.info("No live events returned.")
+
+        except Exception as e:
+            st.error(f"Could not fetch live events: {e}")
 with tab4:
     st.subheader('Polymarket public market search'); st.caption('Read-only. No wallet or private key is used.')
     query=st.text_input('Search active markets','tennis')
