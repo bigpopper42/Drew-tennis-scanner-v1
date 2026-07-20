@@ -70,7 +70,7 @@ with tab2:
         with c3: pnl=st.number_input('Profit / loss ($)',value=0.0,step=.01)
         if st.button('Update result'): update_result(int(row_id),result,pnl); st.success('Updated. Refresh the page.')
 with tab3:
-    st.subheader('Live tennis feed (beta)'); st.info("Click 'Analyze' next to any live match to run it through the scanner.")
+    st.subheader('Live tennis feed (beta)'); st.warning('This fetches raw live events. Automatic field mapping is the next integration step.')
     try: default_key=st.secrets.get('API_TENNIS_KEY','')
     except Exception: default_key=''
     api_key=st.text_input('API Tennis key',value=default_key,type='password')
@@ -78,7 +78,7 @@ with tab3:
         try:
             events=get_live_events(api_key); st.success(f'Fetched {len(events)} live event(s).')
             if events:
-    st.success(f"Found {len(events)} live match(es).")
+                st.success(f"Found {len(events)} live match(es).")
 
     for i, match in enumerate(events):
         player1 = match.get("event_first_player", "Unknown")
